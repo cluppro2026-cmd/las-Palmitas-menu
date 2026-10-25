@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Utensils, Shield, Search, ArrowRight, Plus, Edit2, Trash2, Save, X, Sparkles } from 'lucide-react';
+import { Utensils, Shield, Search, ArrowRight, Plus, Edit2, Trash2, Save, X, Sparkles, ChefHat } from 'lucide-react';
 
 const INITIAL_MENU = [
   // --- ENTRANTES ---
@@ -166,7 +166,7 @@ export default function App() {
   // Admin states
   const [isAdminAuth, setIsAdminAuth] = useState(false);
   const [adminPass, setAdminPass] = useState('');
-  const [adminSearch, setAdminSearch] = useState(''); // Buscador exclusivo para el admin
+  const [adminSearch, setAdminSearch] = useState('');
   const [editingItem, setEditingItem] = useState(null);
   const [newItem, setNewItem] = useState({ name: '', price: '', category: 'Entrantes', description: '', isOffer: false });
 
@@ -174,6 +174,7 @@ export default function App() {
     localStorage.setItem('palmitas_menu', JSON.stringify(menu));
   }, [menu]);
 
+  // Si entra con la ruta #admin directo, abre el panel de administración aparte
   useEffect(() => {
     if (window.location.hash === '#admin') {
       setView('admin');
@@ -190,7 +191,6 @@ export default function App() {
     return matchesCategory && matchesSearch;
   });
 
-  // Filtrado para el panel de administración
   const filteredAdminMenu = menu.filter(item => 
     item.name.toLowerCase().includes(adminSearch.toLowerCase()) || 
     item.category.toLowerCase().includes(adminSearch.toLowerCase())
@@ -215,85 +215,102 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col font-sans selection:bg-amber-500 selection:text-black">
       
-      {/* 1. PANTALLA DE BIENVENIDA (QR) */}
+      {/* 1. PANTALLA DE BIENVENIDA (QR) - Diseño Cálido / Acogedor */}
       {view === 'welcome' && (
-        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-900 via-slate-950 to-black">
-          <div className="relative mb-6">
-            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-emerald-500 to-amber-500 blur-md opacity-75 animate-pulse"></div>
-            <img 
-              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=300" 
-              alt="Las Palmitas Logo" 
-              className="relative w-40 h-40 rounded-full object-cover border-4 border-amber-400 shadow-2xl mx-auto"
-            />
-          </div>
-          <h1 className="text-3xl font-black text-amber-400 tracking-wider mb-2">LAS PALMITAS</h1>
-          <p className="text-sm font-semibold text-emerald-400 tracking-widest uppercase mb-6">Güira de Melena</p>
-          <p className="text-slate-300 max-w-xs mb-8 text-sm">Disfruta de nuestra auténtica cocina, coctelería y el mejor ambiente caribeño.</p>
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-gradient-to-b from-stone-900 via-stone-950 to-amber-950/40">
           
-          <button 
-            onClick={() => setView('menu')}
-            className="w-full max-w-xs bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-95"
-          >
-            <span>Ver Menú y Ofertas</span>
-            <ArrowRight className="w-5 h-5" />
-          </button>
+          {/* Fondo decorativo luminoso estilo caribeño / cálido */}
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
 
-          <button 
-            onClick={() => { setView('admin'); window.location.hash = 'admin'; }}
-            className="mt-6 text-xs text-slate-500 hover:text-slate-300 flex items-center gap-1"
+          <div className="relative z-10 max-w-sm w-full mx-auto bg-stone-900/80 backdrop-blur-md border border-amber-500/30 p-8 rounded-3xl shadow-2xl">
+            <div className="relative mb-6">
+              <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-amber-500 to-emerald-500 blur opacity-75 animate-pulse"></div>
+              <img 
+                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=300" 
+                alt="Las Palmitas Logo" 
+                className="relative w-36 h-36 rounded-full object-cover border-4 border-amber-400 shadow-xl mx-auto"
+              />
+            </div>
+
+            <h1 className="text-3xl font-black text-amber-400 tracking-wider mb-1 font-serif">LAS PALMITAS</h1>
+            <p className="text-xs font-bold text-emerald-400 tracking-widest uppercase mb-4">Güira de Melena</p>
+            
+            <p className="text-stone-300 text-sm mb-8 leading-relaxed">
+              Disfruta de nuestra auténtica cocina, coctelería y el mejor ambiente caribeño.
+            </p>
+            
+            <button 
+              onClick={() => setView('menu')}
+              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-stone-950 font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-amber-500/20 flex items-center justify-center gap-3 transition-all transform active:scale-95 text-base"
+            >
+              <span>Ver Menú y Ofertas</span>
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Enlace discreto para el dueño (fuera del panel de cliente) */}
+          <a 
+            href="#admin"
+            onClick={(e) => { e.preventDefault(); setView('admin'); window.location.hash = 'admin'; }}
+            className="mt-8 text-xs text-stone-500 hover:text-amber-400 flex items-center gap-1.5 transition-colors z-10"
           >
-            <Shield className="w-3.5 h-3.5" /> Panel de Administración
-          </button>
+            <Shield className="w-3.5 h-3.5" /> Acceso Dueño / Admin
+          </a>
         </div>
       )}
 
-      {/* 2. MENÚ DEL CLIENTE */}
+      {/* 2. MENÚ DEL CLIENTE - Diseño Cálido, Tarjetas Coloridas */}
       {view === 'menu' && (
-        <div className="flex-1 flex flex-col max-w-md mx-auto w-full bg-slate-900 min-h-screen shadow-2xl">
-          <div className="sticky top-0 z-20 bg-slate-950/90 backdrop-blur border-b border-slate-800 p-4">
+        <div className="flex-1 flex flex-col max-w-md mx-auto w-full bg-stone-900 min-h-screen shadow-2xl relative border-x border-stone-800">
+          
+          {/* Header Superior Fijo */}
+          <div className="sticky top-0 z-20 bg-stone-950/95 backdrop-blur border-b border-stone-800 p-4 shadow-md">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('welcome')}>
                 <img 
                   src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=80" 
                   alt="Logo" 
-                  className="w-10 h-10 rounded-full border border-amber-400 object-cover"
+                  className="w-10 h-10 rounded-full border border-amber-400 object-cover shadow"
                 />
                 <div>
-                  <h2 className="font-bold text-amber-400 text-base leading-tight">Las Palmitas</h2>
-                  <span className="text-xs text-emerald-400">Güira de Melena</span>
+                  <h2 className="font-bold text-amber-400 text-base leading-tight font-serif">Las Palmitas</h2>
+                  <span className="text-[11px] text-emerald-400 font-medium">Güira de Melena</span>
                 </div>
               </div>
+              
+              {/* Botón para volver al inicio */}
               <button 
-                onClick={() => { setView('admin'); window.location.hash = 'admin'; }}
-                className="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 transition-colors"
-                title="Administración"
+                onClick={() => setView('welcome')}
+                className="text-xs bg-stone-800 hover:bg-stone-700 px-3 py-1.5 rounded-xl text-stone-300 font-medium transition-colors"
               >
-                <Shield className="w-4 h-4" />
+                Inicio
               </button>
             </div>
 
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            {/* Buscador de Platos */}
+            <div className="relative mb-2">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-500" />
               <input 
                 type="text" 
-                placeholder="Buscar plato, bebida u oferta..." 
+                placeholder="Busca tu plato, bebida u oferta..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-stone-900 border border-stone-700/80 rounded-2xl pl-10 pr-4 py-2.5 text-sm text-stone-100 placeholder-stone-500 focus:outline-none focus:border-amber-500 transition-colors shadow-inner"
               />
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pt-3 pb-1 no-scrollbar">
+            {/* Pestañas de Categorías Deslizantes */}
+            <div className="flex gap-2 overflow-x-auto pt-2 pb-1 no-scrollbar">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shadow-sm ${
                     selectedCategory === cat 
-                      ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' 
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                      ? 'bg-amber-500 text-stone-950 font-bold shadow-amber-500/30 scale-105' 
+                      : 'bg-stone-800 text-stone-300 hover:bg-stone-700'
                   }`}
                 >
                   {cat === 'Ofertas' ? '🔥 Ofertas' : cat}
@@ -302,36 +319,42 @@ export default function App() {
             </div>
           </div>
 
-          <div className="p-4 space-y-3 pb-20 flex-1">
+          {/* Listado de Platos Estilizado y Colorido */}
+          <div className="p-4 space-y-3 pb-24 flex-1 bg-stone-900/50">
             {filteredMenu.length === 0 ? (
-              <div className="text-center py-16 text-slate-500">
-                <Utensils className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                <p>No se encontraron platos en esta categoría.</p>
+              <div className="text-center py-20 text-stone-500">
+                <ChefHat className="w-12 h-12 mx-auto mb-3 opacity-30 text-amber-500" />
+                <p className="text-sm">No encontramos platos en esta búsqueda.</p>
               </div>
             ) : (
               filteredMenu.map((item) => (
                 <div 
                   key={item.id} 
-                  className={`relative bg-slate-950/60 border rounded-2xl p-4 transition-all ${
-                    item.isOffer ? 'border-amber-500/50 bg-gradient-to-r from-amber-500/5 to-transparent' : 'border-slate-800/80 hover:border-slate-700'
+                  className={`relative bg-stone-950/80 border rounded-2xl p-4 transition-all shadow-lg ${
+                    item.isOffer 
+                      ? 'border-amber-500/60 bg-gradient-to-r from-amber-500/10 via-stone-950 to-stone-950 ring-1 ring-amber-500/30' 
+                      : 'border-stone-800 hover:border-stone-700'
                   }`}
                 >
                   {item.isOffer && (
-                    <span className="absolute -top-2.5 right-3 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shadow">
+                    <span className="absolute -top-2.5 right-4 bg-amber-500 text-stone-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-md">
                       <Sparkles className="w-3 h-3" /> Oferta Especial
                     </span>
                   )}
-                  <div className="flex justify-between items-start gap-3">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-slate-100 text-sm mb-1">{item.name}</h3>
-                      <p className="text-xs text-slate-400 leading-relaxed mb-2">{item.description}</p>
-                      <span className="inline-block bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-md">
+                  
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-stone-100 text-base mb-1 tracking-wide">{item.name}</h3>
+                      <p className="text-xs text-stone-400 leading-relaxed mb-2.5">{item.description}</p>
+                      
+                      <span className="inline-block bg-stone-900 border border-stone-800 text-amber-400/90 text-[11px] font-medium px-2.5 py-0.5 rounded-md">
                         {item.category}
                       </span>
                     </div>
-                    <div className="text-right">
-                      <span className="text-emerald-400 font-bold text-base block">{item.price}</span>
-                      <span className="text-[10px] text-slate-500 uppercase font-semibold">CUP</span>
+                    
+                    <div className="text-right shrink-0">
+                      <span className="text-emerald-400 font-black text-lg block tracking-tight">{item.price}</span>
+                      <span className="text-[10px] text-stone-500 font-bold uppercase tracking-widest">CUP</span>
                     </div>
                   </div>
                 </div>
@@ -339,32 +362,40 @@ export default function App() {
             )}
           </div>
 
-          <div className="bg-slate-950 border-t border-slate-800 py-3 text-center text-xs text-slate-500">
-            * A su cuenta se le suma el 5% de servicio. ¡Gracias por elegirnos!
+          {/* Footer del Menú */}
+          <div className="bg-stone-950 border-t border-stone-800 py-3 px-4 text-center text-xs text-stone-400 font-medium">
+            * A su cuenta se le suma el 5% de servicio. ¡Gracias por elegirnos[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)!
           </div>
         </div>
       )}
 
-      {/* 3. PANEL DE ADMINISTRACIÓN */}
+      {/* 3. PANEL DE ADMINISTRACIÓN (Ruta separada / Ruta #admin) */}
       {view === 'admin' && (
-        <div className="flex-1 flex flex-col max-w-md mx-auto w-full bg-slate-900 min-h-screen p-4">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
+        <div className="flex-1 flex flex-col max-w-md mx-auto w-full bg-stone-900 min-h-screen p-4">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-stone-800">
             <div className="flex items-center gap-2">
-              <Shield className="w-6 h-6 text-emerald-400" />
-              <h2 className="font-bold text-lg text-white">Panel Admin</h2>
+              <Shield className="w-6 h-6 text-amber-400" />
+              <div>
+                <h2 className="font-bold text-base text-white">Panel de Administración</h2>
+                <p className="text-[11px] text-stone-400">Gestión interna del restaurante</p>
+              </div>
             </div>
             <button 
               onClick={() => { setView('menu'); window.location.hash = ''; }}
-              className="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl text-slate-300"
+              className="text-xs bg-stone-800 hover:bg-stone-700 px-3 py-2 rounded-xl text-stone-200 font-medium transition-colors"
             >
-              Ver Menú
+              Ver Menú Cliente
             </button>
           </div>
 
           {!isAdminAuth ? (
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 my-auto text-center">
-              <h3 className="font-bold text-base mb-2 text-slate-200">Acceso Restringido</h3>
-              <p className="text-xs text-slate-400 mb-4">Ingresa la contraseña sencilla (ej. <b>1234</b>) para modificar precios y ofertas.</p>
+            <div className="bg-stone-950 border border-stone-800 rounded-3xl p-6 my-auto text-center shadow-xl">
+              <div className="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-400">
+                <Shield className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-base mb-1 text-stone-200">Acceso Exclusivo Dueño</h3>
+              <p className="text-xs text-stone-400 mb-5">Ingresa la contraseña para modificar precios y ofertas.</p>
+              
               <form onSubmit={(e) => {
                 e.preventDefault();
                 if (adminPass === '1234' || adminPass === 'admin') {
@@ -378,20 +409,22 @@ export default function App() {
                   placeholder="Contraseña (1234)"
                   value={adminPass}
                   onChange={(e) => setAdminPass(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm mb-3 text-center text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-stone-900 border border-stone-700 rounded-2xl px-4 py-3 text-sm mb-3 text-center text-white focus:outline-none focus:border-amber-500 shadow-inner"
                 />
-                <button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
-                  Ingresar
+                <button type="submit" className="w-full bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold py-3 rounded-2xl text-sm transition-colors shadow-lg shadow-amber-500/20">
+                  Entrar al Panel
                 </button>
               </form>
             </div>
           ) : (
             <div className="space-y-6 pb-12">
-              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4">
-                <h3 className="font-semibold text-sm text-amber-400 mb-3 flex items-center gap-2">
+              {/* Formulario Añadir / Editar */}
+              <div className="bg-stone-950 border border-stone-800 rounded-2xl p-4 shadow-lg">
+                <h3 className="font-bold text-sm text-amber-400 mb-3 flex items-center gap-2">
                   {editingItem ? <Edit2 className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                   {editingItem ? 'Editar Plato u Oferta' : 'Añadir Nuevo Plato u Oferta'}
                 </h3>
+                
                 <form onSubmit={handleSaveItem} className="space-y-3">
                   <input 
                     type="text" 
@@ -399,8 +432,9 @@ export default function App() {
                     value={editingItem ? editingItem.name : newItem.name}
                     onChange={(e) => editingItem ? setEditingItem({...editingItem, name: e.target.value}) : setNewItem({...newItem, name: e.target.value})}
                     required
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
                   />
+                  
                   <div className="grid grid-cols-2 gap-2">
                     <input 
                       type="number" 
@@ -408,40 +442,44 @@ export default function App() {
                       value={editingItem ? editingItem.price : newItem.price}
                       onChange={(e) => editingItem ? setEditingItem({...editingItem, price: e.target.value}) : setNewItem({...newItem, price: e.target.value})}
                       required
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
+                      className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
                     />
+                    
                     <select
                       value={editingItem ? editingItem.category : newItem.category}
                       onChange={(e) => editingItem ? setEditingItem({...editingItem, category: e.target.value}) : setNewItem({...newItem, category: e.target.value})}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
+                      className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
                     >
                       {CATEGORIES.filter(c => c !== 'Todos' && c !== 'Ofertas').map(c => (
                         <option key={c} value={c}>{c}</option>
                       ))}
                     </select>
                   </div>
+                  
                   <textarea 
                     placeholder="Descripción breve..."
                     value={editingItem ? editingItem.description : newItem.description}
                     onChange={(e) => editingItem ? setEditingItem({...editingItem, description: e.target.value}) : setNewItem({...newItem, description: e.target.value})}
                     rows="2"
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
                   ></textarea>
-                  <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+                  
+                  <label className="flex items-center gap-2.5 cursor-pointer text-sm text-stone-300">
                     <input 
                       type="checkbox" 
                       checked={editingItem ? editingItem.isOffer : newItem.isOffer}
                       onChange={(e) => editingItem ? setEditingItem({...editingItem, isOffer: e.target.checked}) : setNewItem({...newItem, isOffer: e.target.checked})}
-                      className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-emerald-500"
+                      className="w-4 h-4 rounded border-stone-700 bg-stone-900 text-amber-500 focus:ring-amber-500"
                     />
                     Marcar como Oferta Especial ⭐
                   </label>
+                  
                   <div className="flex gap-2 pt-2">
-                    <button type="submit" className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 rounded-xl text-sm transition-colors flex items-center justify-center gap-2">
-                      <Save className="w-4 h-4" /> {editingItem ? 'Actualizar' : 'Guardar Plato'}
+                    <button type="submit" className="flex-1 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold py-2.5 rounded-xl text-sm transition-colors flex items-center justify-center gap-2">
+                      <Save className="w-4 h-4" /> {editingItem ? 'Actualizar Plato' : 'Guardar Plato'}
                     </button>
                     {editingItem && (
-                      <button type="button" onClick={() => setEditingItem(null)} className="px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm">
+                      <button type="button" onClick={() => setEditingItem(null)} className="px-4 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-sm">
                         <X className="w-4 h-4" />
                       </button>
                     )}
@@ -449,45 +487,45 @@ export default function App() {
                 </form>
               </div>
 
-              {/* LISTADO DE INVENTARIO CON BUSCADOR PARA EL ADMIN */}
+              {/* Listado de Inventario para Administrar */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-sm text-slate-300">Inventario ({filteredAdminMenu.length} de {menu.length})</h3>
+                  <h3 className="font-semibold text-sm text-stone-300">Inventario ({filteredAdminMenu.length} de {menu.length})</h3>
                 </div>
                 
-                {/* Buscador de Admin para no pasar trabajo buscando platos */}
+                {/* Buscador interno del Administrador */}
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
                   <input 
                     type="text" 
-                    placeholder="Filtrar platos para cambiar precio..." 
+                    placeholder="Busca un plato para cambiar precio..." 
                     value={adminSearch}
                     onChange={(e) => setAdminSearch(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-stone-950 border border-stone-800 rounded-xl pl-10 pr-4 py-2 text-sm text-stone-100 placeholder-stone-500 focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
                 <div className="space-y-2">
                   {filteredAdminMenu.map((item) => (
-                    <div key={item.id} className="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-2">
+                    <div key={item.id} className="bg-stone-950 border border-stone-800 rounded-xl p-3 flex items-center justify-between gap-2 shadow-sm">
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-sm text-white truncate flex items-center gap-1.5">
-                          {item.name} {item.isOffer && <span className="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded">Oferta</span>}
+                          {item.name} {item.isOffer && <span className="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded font-bold">Oferta</span>}
                         </h4>
-                        <p className="text-xs text-emerald-400 font-semibold">{item.price} CUP <span className="text-slate-500 font-normal">({item.category})</span></p>
+                        <p className="text-xs text-emerald-400 font-bold">{item.price} CUP <span className="text-stone-500 font-normal">({item.category})</span></p>
                       </div>
                       <div className="flex items-center gap-1">
                         <button 
                           onClick={() => { setEditingItem(item); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                          className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg"
-                          title="Editar precio u oferta"
+                          className="p-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-lg transition-colors"
+                          title="Editar"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button 
                           onClick={() => handleDeleteItem(item.id)}
-                          className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg"
-                          title="Eliminar plato"
+                          className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition-colors"
+                          title="Eliminar"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
